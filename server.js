@@ -1,5 +1,5 @@
-require('dotenv').config();
 const express = require('express');
+require('dotenv').config();
 const bodyParser = require('body-parser');
 const authRoutes = require('../backend/src/routes/authRoutes.js');
 const cors = require('cors');
@@ -11,12 +11,17 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors());
 
 
 // Routes
 app.use('/api/auth', authRoutes);
 
+
+app.get("/", (req, res) => {
+  res.send("Api Work")
+})
 
 // Start server
 app.listen(PORT, () => {
