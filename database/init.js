@@ -16,30 +16,26 @@ CREATE TABLE IF NOT EXISTS User (
 const createCourseTable = `
 CREATE TABLE IF NOT EXISTS Course (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name TEXT NOT NULL,
-  thumbnail_file_tag TEXT,
-  total_steps INT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  body TEXT,
-  category_id INT,
-  tag_id INT,
-  deleted BOOLEAN DEFAULT false,
-  deleted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  partner_id INT,
-  type ENUM('free', 'paid') DEFAULT 'free',
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  category VARCHAR(255),
+  coverImage VARCHAR(255),
   status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
-  rejection_feedback TEXT DEFAULT NULL
+  created_by INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (created_by) REFERENCES User(id) ON DELETE CASCADE
 )`;
 
 // Query untuk membuat tabel Unit
 const createUnitTable = `
 CREATE TABLE IF NOT EXISTS Unit (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  title TEXT NOT NULL,
+  course_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  course_id INT,
   FOREIGN KEY (course_id) REFERENCES Course(id) ON DELETE CASCADE
 )`;
 
@@ -47,14 +43,12 @@ CREATE TABLE IF NOT EXISTS Unit (
 const createLessonTable = `
 CREATE TABLE IF NOT EXISTS Lesson (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  lesson_id INT,
-  unit_id INT,
+  unit_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  content TEXT,
+  mediaUrl VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  position INT,
-  value INT,
-  deleted BOOLEAN DEFAULT false,
-  deleted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (unit_id) REFERENCES Unit(id) ON DELETE CASCADE
 )`;
 
