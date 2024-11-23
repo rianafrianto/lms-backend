@@ -23,7 +23,7 @@ exports.registerUser = async (req, res) => {
 
     // Insert new user with role
     await insertUser(username, email, hashedPassword, role);
-    res.status(201).json({ message: 'User registered successfully.' });
+    res.status(201).json({ message: 'User registered successfully.', success: true });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: 'Server error.' });
@@ -54,12 +54,17 @@ exports.loginUser = async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { id: user[0].id, role: user[0].role },
+      { id: user[0].id, role: user[0].role, username:user[0].username },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
-
-    res.status(200).json({ message: 'Login successful.', success: true, token });
+    
+    const dataUser = {
+      username: user[0].username,
+      role: user[0].role,
+    }
+    
+    res.status(200).json({ message: 'Login successful.', success: true, token, user: dataUser });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: 'Server error.' });
