@@ -1,5 +1,5 @@
 const connection = require('../config/db.js');
-const { checkUserById, insertNewCourse } = require('../models/courseModel.js');
+const { checkUserById, insertNewCourse, allCourse, courseStatus } = require('../models/courseModel.js');
 
 exports.createCourse = async (req, res) => {
   const { title, description, category, coverImage, createdBy } = req.body;
@@ -14,7 +14,7 @@ exports.createCourse = async (req, res) => {
     if (user.length === 0) {
       return res.status(400).json({ success: false, message: 'User does not exist' });
     }
-   const resultInsert =  await insertNewCourse(title, description, category, coverImage, createdBy)
+    const resultInsert = await insertNewCourse(title, description, category, coverImage, createdBy)
     res.status(201).json({
       success: true,
       message: 'Course created successfully',
@@ -50,3 +50,35 @@ exports.submitCourse = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.getAllCourse = async (req, res) => {
+  try {
+    const data = await allCourse()
+    res.status(200).json({
+      success: true,
+      message: 'Get All Course Successfully',
+      data: data
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getCourseByStatus = async (req, res) => {
+  const { status } = req.params;
+  try {
+    if (!['pending', 'approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status value' });
+    }
+    const data = await courseStatus(status)
+    res.status(200).json({
+      success: true,
+      message: 'Get Course Status Successfully',
+      data: data
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
