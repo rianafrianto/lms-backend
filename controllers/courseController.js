@@ -1,5 +1,5 @@
 const connection = require('../config/db.js');
-const { checkUserById, insertNewCourse, allCourse, courseStatus } = require('../models/courseModel.js');
+const { checkUserById, insertNewCourse, allCourse, courseStatus, checkCourseById, editCourseById } = require('../models/courseModel.js');
 
 exports.createCourse = async (req, res) => {
   const { title, description, category, coverImage, createdBy } = req.body;
@@ -80,5 +80,28 @@ exports.getCourseByStatus = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.editCourse = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, category, coverImage, createdBy } = req.body;
+  if (!title || !description || !category || !coverImage) {
+    return res.status(400).json({ success: false, message: 'All fields are required' });
+  }
+
+  try {
+    const data = await checkCourseById(id)
+    if (data.length === 0) {
+      return res.status(400).json({ success: false, message: 'Course does not exist' });
+    }
+    await editCourseById(id, title, description, category, coverImage, createdBy)
+    res.status(200).json({
+      success: true,
+      message: 'Course updated successfully',
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 
 

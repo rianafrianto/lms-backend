@@ -35,10 +35,33 @@ const courseStatus = async (status) => {
   return result;
 };
 
+// Check exist course
+const checkCourseById = async (id) => {
+  const [result] = await connection.promise().query(
+    'SELECT * FROM Course WHERE id = ?',
+    [id]
+  );
+  return result;
+};
+
+// Edit course
+const editCourseById = async (id, title, description, category, coverImage, createdBy) => {
+  const [result] = await connection.promise().query(
+    `UPDATE Course 
+     SET title = ?, description = ?, category = ?, coverImage = ?, created_by = ?
+     WHERE id = ?`,
+    [title, description, category, coverImage, createdBy, id]
+  );
+  return result;
+};
+
+
 
 module.exports = {
   checkUserById,
   insertNewCourse,
   allCourse,
-  courseStatus
+  courseStatus,
+  checkCourseById,
+  editCourseById
 };
