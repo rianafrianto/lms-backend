@@ -2,6 +2,7 @@
 const multer = require('multer');
 const { Upload } = require('@aws-sdk/lib-storage');
 const s3Client = require("../config/aws.js")
+require('dotenv').config(); 
 
 // Konfigurasi Multer untuk menerima file
 const storage = multer.memoryStorage(); // Penyimpanan di memory sebelum diupload ke Spaces
@@ -15,7 +16,7 @@ const uploadCoverImage = (req, res) => {
     }
 
     const params = {
-      Bucket: 'kiqs-micro', // Nama bucket
+      Bucket: process.env.AWS_BUCKET, // Nama bucket
       Key: `courses/${Date.now()}-${req.file.originalname}`, // Penamaan file di dalam bucket (berikut timestamp untuk menghindari duplikasi)
       Body: req?.file?.buffer, // File yang diupload
       ACL: 'public-read', // Agar file bisa diakses publik
@@ -29,12 +30,7 @@ const uploadCoverImage = (req, res) => {
         params: params,
         leavePartsOnError: false, // Menghapus file yang gagal diupload
       });
-
-      // Menunggu proses upload selesai
-      upload.on('httpUploadProgress', (progress) => {
-        console.log(progress);
-      });
-
+      
       await upload.done();
       const fileUrl = `${process.env.AWS_ENDPOINT}/${params.Key}`;
       return res.status(200).json({
