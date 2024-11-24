@@ -56,6 +56,15 @@ const editCourseById = async (id, title, description, category, coverImage, crea
 };
 
 
+// Insert new unit to course
+const insertUnit = async (courseId, title,description, created_at, updated_at) => {
+  const [result] =  await connection.promise().query(
+    'INSERT INTO Unit (course_id, title, description, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())',
+    [courseId, title, description]
+  );
+  return result
+};
+
 
 module.exports = {
   checkUserById,
@@ -63,5 +72,6 @@ module.exports = {
   allCourse,
   courseStatus,
   checkCourseById,
-  editCourseById
+  editCourseById,
+  insertUnit
 };

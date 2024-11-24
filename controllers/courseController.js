@@ -1,5 +1,5 @@
 const connection = require('../config/db.js');
-const { checkUserById, insertNewCourse, allCourse, courseStatus, checkCourseById, editCourseById } = require('../models/courseModel.js');
+const { checkUserById, insertNewCourse, allCourse, courseStatus, checkCourseById, editCourseById, insertUnit } = require('../models/courseModel.js');
 
 exports.createCourse = async (req, res) => {
   const { title, description, category, coverImage, createdBy } = req.body;
@@ -103,5 +103,21 @@ exports.editCourse = async (req, res) => {
   }
 };
 
+exports.createUnitToCourse = async (req, res) => {
+  const { id } = req.params;
+  const { title, description } = req.body;
+  if (!title || !description) {
+    return res.status(400).json({ success: false, message: 'All fields are required' });
+  }
+  try {
+    await insertUnit(id, title, description)
+    res.status(201).json({
+      success: true,
+      message: 'Unit successfully added to course',
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 

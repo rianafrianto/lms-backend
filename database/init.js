@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS Course (
   category VARCHAR(255),
   coverImage VARCHAR(255),
   status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+  feedback TEXT,
   created_by INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require("./routes/authRoutes.js")
 const courseRoutes = require("./routes/courseRoutes.js")
 const uploadRoutes = require('./routes/uploadRoutes.js');
+const unitRoutes = require('./routes/unitRoutes.js');
 const cors = require('cors');
 const PORT = process.env.PORT || 5000;
 
@@ -18,7 +19,7 @@ app.use(cors());
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/feature', courseRoutes);
+app.use('/api/feature', courseRoutes, unitRoutes);
 app.use('/api/s3', uploadRoutes);
 
 
