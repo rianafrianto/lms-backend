@@ -16,10 +16,10 @@ const uploadCoverImage = (req, res) => {
 
     const params = {
       Bucket: 'kiqs-micro', // Nama bucket
-      Key: `courses/${Date.now()}-${req.file.originalname}`, // Penamaan file di dalam bucket (berikut timestamp untuk menghindari duplikasi)
-      Body: req.file.buffer, // File yang diupload
+      Key: `courses/${Date.now()}-${req?.file?.originalname}`, // Penamaan file di dalam bucket (berikut timestamp untuk menghindari duplikasi)
+      Body: req?.file?.buffer, // File yang diupload
       ACL: 'public-read', // Agar file bisa diakses publik
-      ContentType: req.file.mimetype, // Jenis konten (misalnya image/png)
+      ContentType: req?.file?.mimetype, // Jenis konten (misalnya image/png)
     };
 
     try {

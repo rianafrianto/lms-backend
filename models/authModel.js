@@ -20,5 +20,5 @@ const insertUser = async (username, email, hashedPassword, role) => {
 
 module.exports = {
   checkUserExists,
-  insertUser,
+  insertUser
 };
