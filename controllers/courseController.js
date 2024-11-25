@@ -104,12 +104,12 @@ exports.editCourse = async (req, res) => {
 
 exports.createUnitToCourse = async (req, res) => {
   const { id } = req.params;
-  const { title, description } = req.body;
-  if (!title || !description) {
-    return res.status(400).json({ success: false, message: 'All fields are required' });
+  const { title} = req.body;
+  if (!title) {
+    return res.status(400).json({ success: false, message: 'Title field are required' });
   }
   try {
-    await insertUnit(id, title, description)
+    await insertUnit(id, title)
     res.status(201).json({
       success: true,
       message: 'Unit successfully added to course',
@@ -177,7 +177,7 @@ exports.getDetailCourse = async (req, res) => {
 
 exports.softDeleteCourse = async (req, res) => {
   const { id } = req.params;
-  const { deleted_by } = req.body
+  const {deleted_by} = req.body
   try {
     await deleteCourse(deleted_by, id)
     res.status(200).json({

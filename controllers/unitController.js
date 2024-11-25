@@ -1,4 +1,4 @@
-const { insertLesson } = require("../models/unitModel.js");
+const { insertLesson, getUnitById, checkUnitById, updateUnitById } = require("../models/unitModel.js");
 
 exports.createLessonToUnit = async (req, res) => {
     const { id } = req.params;
@@ -16,4 +16,35 @@ exports.createLessonToUnit = async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   };
+
+  exports.getUnit = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const unit = await getUnitById(id);
+      if (!unit) {
+        return res.status(404).json({ success: false, message: 'Unit not found' });
+      }
+      res.status(200).json({ success: true, message: 'Get Unit successfully', data: unit });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  exports.updateUnit = async (req, res) => {
+    const { id } = req.params;
+    const { title } = req.body;
+    try {
+      if (!title) {
+        return res.status(400).json({ success: false, message: 'Title field are required' });
+      }
+      const unit = await checkUnitById(id);
+      if (!unit) {
+        return res.status(404).json({ success: false, message: 'Unit not found' });
+      }
+      await updateUnitById(id, title)
+      res.status(200).json({ success: true, message: 'Update Unit successfully' });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
   
