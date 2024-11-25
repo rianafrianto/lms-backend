@@ -1,5 +1,5 @@
 const connection = require('../config/db.js');
-const { checkUserById, insertNewCourse, allCourse, courseStatus, checkCourseById, editCourseById, insertUnit, getDetail, validateCourse, updateCourseStatus } = require('../models/courseModel.js');
+const { checkUserById, insertNewCourse, allCourse, courseStatus, checkCourseById, editCourseById, insertUnit, getDetail, validateCourse, updateCourseStatus, deleteCourse } = require('../models/courseModel.js');
 
 exports.createCourse = async (req, res) => {
   const { title, description, category, coverImage, createdBy } = req.body;
@@ -174,5 +174,19 @@ exports.getDetailCourse = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.softDeleteCourse = async (req, res) => {
+  const { id } = req.params;
+  const { deleted_by } = req.body
+  try {
+    await deleteCourse(deleted_by, id)
+    res.status(200).json({
+      success: true,
+      message: 'Course deleted successfully',
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
 
 

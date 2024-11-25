@@ -21,7 +21,7 @@ const insertNewCourse = async (title, description, category, coverImage, created
 // Get All Courses
 const allCourse = async () => {
   const [result] = await connection.promise().query(
-    'SELECT * FROM Course',
+    'SELECT * FROM Course WHERE deleted_at IS NULL',
   );
   return result;
 };
@@ -29,20 +29,22 @@ const allCourse = async () => {
 // Get Courses Status
 const courseStatus = async (status) => {
   const [result] = await connection.promise().query(
-    'SELECT * FROM Course WHERE status = ?',
+    'SELECT * FROM Course WHERE status = ? AND deleted_at IS NULL',
     [status]
   );
   return result;
 };
 
+
 // Check exist course
 const checkCourseById = async (id) => {
   const [result] = await connection.promise().query(
-    'SELECT * FROM Course WHERE id = ?',
+    'SELECT * FROM Course WHERE id = ? AND deleted_at IS NULL',
     [id]
   );
   return result;
 };
+
 
 // Edit course
 const editCourseById = async (id, title, description, category, coverImage, createdBy) => {
@@ -122,6 +124,15 @@ const updateCourseStatus = async (id, status) => {
   return result;
 };
 
+// delete course
+const deleteCourse = async (deleted_by, id) => {
+  const [result] = await connection.promise().query(
+    'UPDATE Course SET deleted_at = NOW(), deleted_by = ? WHERE id = ? AND deleted_at IS NULL',
+    [deleted_by, id]
+  );
+  return result
+}
+
 
 module.exports = {
   checkUserById,
@@ -133,5 +144,6 @@ module.exports = {
   insertUnit,
   getDetail,
   validateCourse,
-  updateCourseStatus
+  updateCourseStatus,
+  deleteCourse
 };

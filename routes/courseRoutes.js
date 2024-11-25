@@ -1,5 +1,5 @@
 const express = require('express');
-const { createCourse, submitAndAporoveCourse, getAllCourse, getCourseByStatus, editCourse, createUnitToCourse, getDetailCourse } = require('../controllers/courseController.js');
+const { createCourse, submitAndAporoveCourse, getAllCourse, getCourseByStatus, editCourse, createUnitToCourse, getDetailCourse, softDeleteCourse } = require('../controllers/courseController.js');
 const authenticateJWT = require('../middlewares/authMiddleware.js');
 const router = express.Router();
 
@@ -10,6 +10,8 @@ router.get('/courses/:status', authenticateJWT, getCourseByStatus);
 router.put('/courses/:id', authenticateJWT, editCourse);
 router.post('/courses/:id/units', createUnitToCourse);
 router.get('/courses/detail/:id', authenticateJWT, getDetailCourse);
+router.delete('/courses/delete/:id', authenticateJWT, softDeleteCourse);
+
 
 
 module.exports = router;
