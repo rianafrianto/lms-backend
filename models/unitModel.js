@@ -35,8 +35,14 @@ const updateUnitById = async (id, title, description) => {
   return result;
 };
 
-
-
+// delete unit
+const deleteUnit = async (deleted_by, id) => {
+  const [result] = await connection.promise().query(
+    'UPDATE Unit SET deleted_at = NOW(), deleted_by = ? WHERE id = ? AND deleted_at IS NULL',
+    [deleted_by, id]
+  );
+  return result
+}
 
 
 
@@ -44,5 +50,6 @@ module.exports = {
   insertLesson,
   getUnitById,
   checkUnitById,
-  updateUnitById
+  updateUnitById,
+  deleteUnit
 }
