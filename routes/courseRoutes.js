@@ -4,7 +4,7 @@ const authenticateJWT = require('../middlewares/authMiddleware.js');
 const router = express.Router();
 
 router.post('/courses', authenticateJWT, createCourse);
-router.post('/courses/units/:id', createUnitToCourse);
+router.post('/courses/:id', createUnitToCourse);
 router.post('/courses/:id/:status', authenticateJWT, submitAndAporoveCourse);
 router.get('/courses', authenticateJWT, getAllCourse);
 router.get('/courses/:status', authenticateJWT, getCourseByStatus);
