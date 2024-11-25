@@ -26,23 +26,25 @@ exports.createCourse = async (req, res) => {
 };
 
 
-exports.submitCourse = async (req, res) => {
-  const { id } = req.params;
+exports.submitAndAporoveCourse = async (req, res) => {
+  const { id, status } = req.params;
   try {
     const validate = await validateCourse(id)
-    const { unit_count, lesson_count } = validate[0];
+    const { unit_count, lesson_count } = validate[0]; 
 
-    if (unit_count < 1) {
-      return res.status(400).json({ message: 'Course must have at least one unit.' });
+    if(status === "pending") {
+      if (unit_count < 1) {
+        return res.status(400).json({ success: false, message: 'Course must have at least one unit.' });
+      }
+  
+      if (lesson_count < 1) {
+        return res.status(400).json({ success: false, message: 'Each unit must have at least one lesson.' });
+      }
     }
 
-    if (lesson_count < 1) {
-      return res.status(400).json({ message: 'Each unit must have at least one lesson.' });
-    }
+    await updateCourseStatus(id, status)
 
-    await updateCourseStatus(id, "pending")
-
-    res.status(200).json({ success: true, message: 'Course submitted for review' });
+    res.status(200).json({ success: true, message: status === "pending" ? 'Course submitted for review' : 'Course Approved' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -117,7 +119,7 @@ exports.createUnitToCourse = async (req, res) => {
   }
 };
 
-exports.getDetailCourse  = async (req, res) => {
+exports.getDetailCourse = async (req, res) => {
   const { id } = req.params;
   try {
     const data = await checkCourseById(id)
@@ -136,32 +138,32 @@ exports.getDetailCourse  = async (req, res) => {
       feedback: resultData[0].course_feedback,
       units: [],
     };
-     // Buat mapping unit dan lesson
-     const unitMap = new Map();
+    // Buat mapping unit dan lesson
+    const unitMap = new Map();
 
-     resultData.forEach((row) => {
-       if (row.unit_id) {
-         if (!unitMap.has(row.unit_id)) {
-           unitMap.set(row.unit_id, {
-             unit_id: row.unit_id,
-             title: row.unit_title,
-             description: row.unit_description,
-             lessons: [],
-           });
-         }
- 
-         if (row.lesson_id) {
-           unitMap.get(row.unit_id).lessons.push({
-             lesson_id: row.lesson_id,
-             title: row.lesson_title,
-             content: row.lesson_content,
-           });
-         }
-       }
-     });
- 
-     // Masukkan unit ke course
-     course.units = Array.from(unitMap.values());
+    resultData.forEach((row) => {
+      if (row.unit_id) {
+        if (!unitMap.has(row.unit_id)) {
+          unitMap.set(row.unit_id, {
+            unit_id: row.unit_id,
+            title: row.unit_title,
+            description: row.unit_description,
+            lessons: [],
+          });
+        }
+
+        if (row.lesson_id) {
+          unitMap.get(row.unit_id).lessons.push({
+            lesson_id: row.lesson_id,
+            title: row.lesson_title,
+            content: row.lesson_content,
+          });
+        }
+      }
+    });
+
+    // Masukkan unit ke course
+    course.units = Array.from(unitMap.values());
 
     res.status(201).json({
       success: true,
