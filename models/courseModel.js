@@ -65,6 +65,63 @@ const insertUnit = async (courseId, title,description, created_at, updated_at) =
   return result
 };
 
+// Get Detail Course With Unit & Lesson
+const getDetail = async (id) => {
+  const [result] = await connection.promise().query(
+    `SELECT
+      c.id AS course_id,
+      c.title AS course_title,
+      c.description AS course_description,
+      c.status AS course_status,
+      c.feedback AS course_feedback,
+      c.coverImage AS course_cover_image,
+      u.id AS unit_id,
+      u.title AS unit_title,
+      u.description AS unit_description,
+      l.id AS lesson_id,
+      l.title AS lesson_title,
+      l.content AS lesson_content
+    FROM
+      Course c
+    LEFT JOIN
+      Unit u ON u.course_id = c.id
+    LEFT JOIN
+      Lesson l ON l.unit_id = u.id
+    WHERE
+      c.id = ?;`,
+    [id]
+  );
+  return result;
+}
+
+// validate course have min 1 unit and 1 lesson
+const validateCourse = async (id) => {
+  const [result] = await connection.promise().query(
+    `SELECT
+      COUNT(DISTINCT u.id) AS unit_count,
+      COUNT(DISTINCT l.id) AS lesson_count
+    FROM
+      Course c
+    LEFT JOIN
+      Unit u ON u.course_id = c.id
+    LEFT JOIN
+      Lesson l ON l.unit_id = u.id
+    WHERE
+      c.id = ?;`,
+    [id]
+  );
+  return result;
+}
+
+// update course status 
+const updateCourseStatus = async (id, status) => {
+  const [result] = await connection.promise().query(
+    'UPDATE Course SET status =? WHERE id =?',
+    [status, id]
+  );
+  return result;
+};
+
 
 module.exports = {
   checkUserById,
@@ -73,5 +130,8 @@ module.exports = {
   courseStatus,
   checkCourseById,
   editCourseById,
-  insertUnit
+  insertUnit,
+  getDetail,
+  validateCourse,
+  updateCourseStatus
 };

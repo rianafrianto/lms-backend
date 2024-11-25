@@ -1,5 +1,5 @@
 const connection = require('../config/db.js');
-const { checkUserById, insertNewCourse, allCourse, courseStatus, checkCourseById, editCourseById, insertUnit } = require('../models/courseModel.js');
+const { checkUserById, insertNewCourse, allCourse, courseStatus, checkCourseById, editCourseById, insertUnit, getDetail, validateCourse, updateCourseStatus } = require('../models/courseModel.js');
 
 exports.createCourse = async (req, res) => {
   const { title, description, category, coverImage, createdBy } = req.body;
@@ -26,24 +26,21 @@ exports.createCourse = async (req, res) => {
 };
 
 
-
-
 exports.submitCourse = async (req, res) => {
   const { id } = req.params;
-
   try {
-    const query = 'SELECT COUNT(*) as count FROM unit WHERE courseId = ?';
-    const [[unitCount]] = await connection.execute(query, [id]);
+    const validate = await validateCourse(id)
+    const { unit_count, lesson_count } = validate[0];
 
-    const queryLesson = 'SELECT COUNT(*) as count FROM lesson WHERE unitId IN (SELECT id FROM unit WHERE courseId = ?)';
-    const [[lessonCount]] = await connection.execute(queryLesson, [id]);
-
-    if (unitCount.count === 0 || lessonCount.count === 0) {
-      return res.status(400).json({ success: false, message: 'Course must have at least one unit and one lesson to be submitted' });
+    if (unit_count < 1) {
+      return res.status(400).json({ message: 'Course must have at least one unit.' });
     }
 
-    const updateQuery = 'UPDATE course SET status = ? WHERE id = ?';
-    await connection.execute(updateQuery, ['pending', id]);
+    if (lesson_count < 1) {
+      return res.status(400).json({ message: 'Each unit must have at least one lesson.' });
+    }
+
+    await updateCourseStatus(id, "pending")
 
     res.status(200).json({ success: true, message: 'Course submitted for review' });
   } catch (error) {
@@ -114,6 +111,62 @@ exports.createUnitToCourse = async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Unit successfully added to course',
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getDetailCourse  = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const data = await checkCourseById(id)
+    if (data.length === 0) {
+      return res.status(400).json({ success: false, message: 'Course does not exist' });
+    }
+    const resultData = await getDetail(id)
+    if (resultData.length === 0) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+    const course = {
+      id: resultData[0].course_id,
+      title: resultData[0].course_title,
+      description: resultData[0].course_description,
+      status: resultData[0].course_status,
+      feedback: resultData[0].course_feedback,
+      units: [],
+    };
+     // Buat mapping unit dan lesson
+     const unitMap = new Map();
+
+     resultData.forEach((row) => {
+       if (row.unit_id) {
+         if (!unitMap.has(row.unit_id)) {
+           unitMap.set(row.unit_id, {
+             unit_id: row.unit_id,
+             title: row.unit_title,
+             description: row.unit_description,
+             lessons: [],
+           });
+         }
+ 
+         if (row.lesson_id) {
+           unitMap.get(row.unit_id).lessons.push({
+             lesson_id: row.lesson_id,
+             title: row.lesson_title,
+             content: row.lesson_content,
+           });
+         }
+       }
+     });
+ 
+     // Masukkan unit ke course
+     course.units = Array.from(unitMap.values());
+
+    res.status(201).json({
+      success: true,
+      message: 'Get Detail Course Successfully',
+      data: course
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
