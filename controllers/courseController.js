@@ -165,7 +165,7 @@ exports.getDetailCourse = async (req, res) => {
     // Masukkan unit ke course
     course.units = Array.from(unitMap.values());
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: 'Get Detail Course Successfully',
       data: course
