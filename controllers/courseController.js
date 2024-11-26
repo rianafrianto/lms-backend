@@ -134,6 +134,8 @@ exports.getDetailCourse = async (req, res) => {
       id: resultData[0].course_id,
       title: resultData[0].course_title,
       description: resultData[0].course_description,
+      category: resultData[0].course_category,
+      coverImage: resultData[0].course_cover_image,
       status: resultData[0].course_status,
       feedback: resultData[0].course_feedback,
       units: [],

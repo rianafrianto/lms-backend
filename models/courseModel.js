@@ -79,6 +79,7 @@ const getDetail = async (id) => {
       c.id AS course_id,
       c.title AS course_title,
       c.description AS course_description,
+      c.category AS course_category,
       c.status AS course_status,
       c.feedback AS course_feedback,
       c.coverImage AS course_cover_image,
