@@ -1,5 +1,5 @@
 const connection = require('../config/db.js');
-const { checkUserById, insertNewCourse, allCourse, courseStatus, checkCourseById, editCourseById, insertUnit, getDetail, validateCourse, updateCourseStatus, deleteCourse, allCourseForAdmin } = require('../models/courseModel.js');
+const { checkUserById, insertNewCourse, allCourse, courseStatus, checkCourseById, editCourseById, insertUnit, getDetail, validateCourse, updateCourseStatus, deleteCourse, allCourseForAdmin, allCourseForUser } = require('../models/courseModel.js');
 
 exports.createCourse = async (req, res) => {
   const { title, description, category, coverImage, createdBy } = req.body;
@@ -210,3 +210,16 @@ exports.getAllCourseAdmin = async (req, res) => {
   }
 };
 
+exports.getCourseById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const data = await allCourseForUser(id)
+    res.status(200).json({
+      success: true,
+      message: 'Get All Course User Successfully',
+      data: data
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}

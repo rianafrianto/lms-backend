@@ -154,6 +154,18 @@ const allCourseForAdmin = async () => {
   return result;
 };
 
+const allCourseForUser = async (userId) => {
+  const [result] = await connection.promise().query(
+    `SELECT c.*, u.username AS created_name
+     FROM Course c
+     LEFT JOIN User u ON c.created_by = u.id
+     WHERE c.created_by = ? AND c.deleted_at IS NULL`,
+    [userId]
+  );
+  return result;
+};
+
+
 
 
 module.exports = {
@@ -168,5 +180,6 @@ module.exports = {
   validateCourse,
   updateCourseStatus,
   deleteCourse,
-  allCourseForAdmin
+  allCourseForAdmin,
+  allCourseForUser
 };

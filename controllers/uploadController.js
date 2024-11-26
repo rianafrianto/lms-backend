@@ -35,6 +35,7 @@ const uploadCoverImage = (req, res) => {
       const fileUrl = `${process.env.AWS_ENDPOINT.replace('://', `://${process.env.AWS_BUCKET}.`)}/${params.Key}`;
 
       return res.status(200).json({
+        success: true,
         message: 'File uploaded successfully',
         fileUrl: fileUrl
       });
