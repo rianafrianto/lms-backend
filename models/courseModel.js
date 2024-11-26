@@ -120,13 +120,19 @@ const validateCourse = async (id) => {
 }
 
 // update course status 
-const updateCourseStatus = async (id, status) => {
-  const [result] = await connection.promise().query(
-    'UPDATE Course SET status =? WHERE id =?',
-    [status, id]
-  );
+const updateCourseStatus = async (id, status, feedback = null) => {
+  let query = 'UPDATE Course SET status = ? WHERE id = ?';
+  let params = [status, id];
+
+  if (status === "rejected" && feedback) {
+    query = 'UPDATE Course SET status = ?, feedback = ? WHERE id = ?';
+    params = [status, feedback, id];
+  }
+
+  const [result] = await connection.promise().query(query, params);
   return result;
 };
+
 
 // delete course
 const deleteCourse = async (deleted_by, id) => {

@@ -26,8 +26,9 @@ exports.createCourse = async (req, res) => {
 };
 
 
-exports.submitAndAporoveCourse = async (req, res) => {
+exports.updateCouseStatus = async (req, res) => {
   const { id, status } = req.params;
+  const { feedback } = req.body;
   try {
     const validate = await validateCourse(id)
     const { unit_count, lesson_count } = validate[0]; 
@@ -42,7 +43,11 @@ exports.submitAndAporoveCourse = async (req, res) => {
       }
     }
 
-    await updateCourseStatus(id, status)
+    if (status === "rejected" && !feedback) {
+      return res.status(400).json({ success: false, message: 'Feedback is required when rejecting the course.' });
+    }
+
+    await updateCourseStatus(id, status, feedback)
 
     res.status(200).json({ success: true, message: status === "pending" ? 'Course submitted for review' : 'Course Approved' });
   } catch (error) {
