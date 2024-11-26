@@ -16,7 +16,7 @@ const uploadCoverImage = (req, res) => {
     }
 
     const params = {
-      Bucket: process.env.AWS_BUCKET, // Nama bucket
+      Bucket: process.env.BUCKET_NAME, // Nama bucket
       Key: `courses/${Date.now()}-${req.file.originalname}`, // Penamaan file di dalam bucket (berikut timestamp untuk menghindari duplikasi)
       Body: req?.file?.buffer, // File yang diupload
       ACL: 'public-read', // Agar file bisa diakses publik
@@ -32,7 +32,7 @@ const uploadCoverImage = (req, res) => {
       });
 
       await upload.done();
-      const fileUrl = `${process.env.AWS_ENDPOINT.replace('://', `://${process.env.AWS_BUCKET}.`)}/${params.Key}`;
+      const fileUrl = `${process.env.BUCKET_ENDPOINT.replace('://', `://${process.env.BUCKET_NAME}.`)}/${params.Key}`;
 
       return res.status(200).json({
         success: true,
