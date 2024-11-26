@@ -19,13 +19,11 @@ const insertNewCourse = async (title, description, category, coverImage, created
 };
 
 
-// Get All Courses with username from User table
+// Get All Courses
 const allCourse = async () => {
   const [result] = await connection.promise().query(
-    `SELECT c.*, u.username AS created_name
-     FROM Course c
-     LEFT JOIN User u ON c.created_by = u.id
-     WHERE c.deleted_at IS NULL`
+    `SELECT *
+     FROM Course WHERE deleted_at IS NULL`
   );
   return result;
 };
@@ -139,6 +137,17 @@ const deleteCourse = async (deleted_by, id) => {
   return result
 }
 
+const allCourseForAdmin = async () => {
+  const [result] = await connection.promise().query(
+    `SELECT c.*, u.username AS created_name
+     FROM Course c
+     LEFT JOIN User u ON c.created_by = u.id
+     WHERE c.deleted_at IS NULL AND c.status IS NOT NULL`
+  );
+  return result;
+};
+
+
 
 module.exports = {
   checkUserById,
@@ -151,5 +160,6 @@ module.exports = {
   getDetail,
   validateCourse,
   updateCourseStatus,
-  deleteCourse
+  deleteCourse,
+  allCourseForAdmin
 };
