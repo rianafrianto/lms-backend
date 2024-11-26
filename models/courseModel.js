@@ -86,7 +86,8 @@ const getDetail = async (id) => {
       u.description AS unit_description,
       l.id AS lesson_id,
       l.title AS lesson_title,
-      l.content AS lesson_content
+      l.content AS lesson_content,
+      l.mediaUrl AS lesson_media_url
     FROM
       Course c
     LEFT JOIN

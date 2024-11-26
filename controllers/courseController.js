@@ -164,6 +164,7 @@ exports.getDetailCourse = async (req, res) => {
             lesson_id: row.lesson_id,
             title: row.lesson_title,
             content: row.lesson_content,
+            mediaUrl: row.lesson_media_url,
           });
         }
       }
