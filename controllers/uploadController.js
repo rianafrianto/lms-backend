@@ -2,7 +2,7 @@
 const multer = require('multer');
 const { Upload } = require('@aws-sdk/lib-storage');
 const s3Client = require("../config/aws.js")
-require('dotenv').config(); 
+require('dotenv').config();
 
 // Konfigurasi Multer untuk menerima file
 const storage = multer.memoryStorage(); // Penyimpanan di memory sebelum diupload ke Spaces
@@ -23,16 +23,17 @@ const uploadCoverImage = (req, res) => {
       ContentType: req?.file?.mimetype, // Jenis konten (misalnya image/png)
     };
     try {
-      
-       // Menggunakan Upload untuk menangani file upload
-       const upload = new Upload({
+
+      // Menggunakan Upload untuk menangani file upload
+      const upload = new Upload({
         client: s3Client,
         params: params,
         leavePartsOnError: false, // Menghapus file yang gagal diupload
       });
-      
+
       await upload.done();
-      const fileUrl = `${process.env.AWS_ENDPOINT}/${params.Key}`;
+      const fileUrl = `${process.env.AWS_ENDPOINT.replace('://', `://${process.env.AWS_BUCKET}.`)}/${params.Key}`;
+
       return res.status(200).json({
         message: 'File uploaded successfully',
         fileUrl: fileUrl
