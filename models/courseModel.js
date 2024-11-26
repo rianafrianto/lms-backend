@@ -18,13 +18,18 @@ const insertNewCourse = async (title, description, category, coverImage, created
   return result
 };
 
-// Get All Courses
+
+// Get All Courses with username from User table
 const allCourse = async () => {
   const [result] = await connection.promise().query(
-    'SELECT * FROM Course WHERE deleted_at IS NULL',
+    `SELECT c.*, u.username AS created_name
+     FROM Course c
+     LEFT JOIN User u ON c.created_by = u.id
+     WHERE c.deleted_at IS NULL`
   );
   return result;
 };
+
 
 // Get Courses Status
 const courseStatus = async (status) => {
