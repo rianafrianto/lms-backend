@@ -83,7 +83,6 @@ const getDetail = async (id) => {
       c.coverImage AS course_cover_image,
       u.id AS unit_id,
       u.title AS unit_title,
-      u.description AS unit_description,
       l.id AS lesson_id,
       l.title AS lesson_title,
       l.content AS lesson_content,
