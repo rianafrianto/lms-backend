@@ -27,10 +27,10 @@ const checkUnitById = async (id) => {
 };
 
 // Update unit
-const updateUnitById = async (id, title, description) => {
+const updateUnitById = async (id, title) => {
   const [result] = await connection.promise().query(
-    'UPDATE Unit SET title = ?, description = ?, updated_at = NOW() WHERE id = ? AND deleted_at IS NULL',
-    [title, description, id]
+    'UPDATE Unit SET title = ?, updated_at = NOW() WHERE id = ? AND deleted_at IS NULL',
+    [title, id]
   );
   return result;
 };
