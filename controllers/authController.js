@@ -62,6 +62,7 @@ exports.loginUser = async (req, res) => {
     const dataUser = {
       username: user[0].username,
       role: user[0].role,
+      id: user[0].id
     }
     
     res.status(200).json({ message: 'Login successful.', success: true, token, user: dataUser });

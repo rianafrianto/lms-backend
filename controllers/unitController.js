@@ -52,6 +52,9 @@ exports.softDeleteUnit = async (req, res) => {
   const { id } = req.params;
   const { deleted_by } = req.body
   try {
+    if (!deleted_by) {
+      return res.status(404).json({ success: false, message: 'User required!.' });
+    }
     await deleteUnit(deleted_by, id)
     res.status(200).json({
       success: true,
