@@ -90,11 +90,11 @@ const getDetail = async (id) => {
     FROM
       Course c
     LEFT JOIN
-      Unit u ON u.course_id = c.id
+      Unit u ON u.course_id = c.id AND u.deleted_at IS NULL
     LEFT JOIN
-      Lesson l ON l.unit_id = u.id
+      Lesson l ON l.unit_id = u.id AND l.deleted_at IS NULL
     WHERE
-      c.id = ?;`,
+      c.id = ? AND c.deleted_at IS NULL;`,
     [id]
   );
   return result;
@@ -109,15 +109,16 @@ const validateCourse = async (id) => {
     FROM
       Course c
     LEFT JOIN
-      Unit u ON u.course_id = c.id
+      Unit u ON u.course_id = c.id AND u.deleted_at IS NULL
     LEFT JOIN
-      Lesson l ON l.unit_id = u.id
+      Lesson l ON l.unit_id = u.id AND l.deleted_at IS NULL
     WHERE
-      c.id = ?;`,
+      c.id = ? AND c.deleted_at IS NULL;`,
     [id]
   );
   return result;
 }
+
 
 // update course status 
 const updateCourseStatus = async (id, status, feedback = null) => {
