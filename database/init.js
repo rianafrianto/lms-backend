@@ -53,11 +53,34 @@ CREATE TABLE IF NOT EXISTS Lesson (
   title VARCHAR(255) NOT NULL,
   content TEXT,
   mediaUrl VARCHAR(255),
+  deleted_at TIMESTAMP NULL,
+  deleted_by INT NULL,
+  value INT NOT NULL,
+  position INT NOT NULL,
+  content_type VARCHAR(255) NOT NULL,
+  game_type VARCHAR(255) NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (unit_id) REFERENCES Unit(id) ON DELETE CASCADE,
+  FOREIGN KEY (unit_id) REFERENCES Unit(id) ON DELETE CASCADE
+)`;
+
+// Query untuk membuat tabel Sub Lesson
+const createSubLessonTable = `
+CREATE TABLE IF NOT EXISTS SubLesson (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  lesson_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  content TEXT,
+  mediaUrl VARCHAR(255),
   deleted_at TIMESTAMP NULL,
-  deleted_by INT NULL
+  deleted_by INT NULL,
+  value INT NOT NULL,
+  position INT NOT NULL,
+  content_type VARCHAR(255) NOT NULL,
+  game_type VARCHAR(255) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (lesson_id) REFERENCES Lesson(id) ON DELETE CASCADE
 )`;
 
 // Menjalankan query untuk membuat tabel User
@@ -93,6 +116,15 @@ connection.query(createLessonTable, (err, result) => {
     console.error("Error creating table 'Lesson':", err.message);
   } else {
     console.log("Table 'Lesson' created successfully.");
+  }
+});
+
+// Menjalankan query untuk membuat tabel Sub Lesson
+connection.query(createSubLessonTable, (err, result) => {
+  if (err) {
+    console.error("Error creating table 'Sub Lesson':", err.message);
+  } else {
+    console.log("Table 'Sub Lesson' created successfully.");
   }
 });
 
