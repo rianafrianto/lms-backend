@@ -2,13 +2,14 @@ const connection = require('../config/db.js');
 
 
 // Insert new lesson to unit
-const insertLesson = async (unitId, title, content, mediaUrl, created_at, updated_at) => {
+const insertLesson = async (unitId, title, content, mediaUrl, value, position, content_type, game_type) => {
   const [result] = await connection.promise().query(
-    'INSERT INTO Lesson (unit_id, title, content, mediaUrl, created_at, updated_at) VALUES (?,?,?,?, NOW(), NOW())',
-    [unitId, title, content, mediaUrl]
+    'INSERT INTO Lesson (unit_id, title, content, mediaUrl, value, position, content_type, game_type, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,NOW(),NOW())',
+    [unitId, title, content, mediaUrl, value, position, content_type, game_type]
   );
-  return result
+  return result;
 };
+
 
 // Get units by course ID
 const getUnitById = async (id) => {

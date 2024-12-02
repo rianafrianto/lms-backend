@@ -8,13 +8,14 @@ const getLessonById = async (id) => {
 }
 
 // Update lesson 
-const updateLessonById = async (id, title, content, mediaUrl) => {
+const updateLessonById = async (id, title, content, mediaUrl, value, position, content_type, game_type) => {
   const [result] = await connection.promise().query(
-    'UPDATE Lesson SET title = ?, content = ?, mediaUrl = ?, updated_at = NOW() WHERE id = ? AND deleted_at IS NULL',
-    [title, content, mediaUrl, id]
+    'UPDATE Lesson SET title = ?, content = ?, mediaUrl = ?, value = ?, position = ?, content_type = ?, game_type = ?, updated_at = NOW() WHERE id = ? AND deleted_at IS NULL',
+    [title, content, mediaUrl, value, position, content_type, game_type, id]
   );
   return result;
 };
+
 
 // delete lesson
 const deleteLesson = async (deleted_by, id) => {

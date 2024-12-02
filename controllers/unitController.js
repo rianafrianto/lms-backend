@@ -2,12 +2,12 @@ const { insertLesson, getUnitById, checkUnitById, updateUnitById, deleteUnit } =
 
 exports.createLessonToUnit = async (req, res) => {
   const { id } = req.params;
-  const { title, content, mediaUrl } = req.body;
-  if (!title || !content || !mediaUrl) {
+  const { title, content, mediaUrl, value, position, content_type, game_type } = req.body;
+  if (!title || !content || !content_type) {
     return res.status(400).json({ success: false, message: 'All fields are required' });
   }
   try {
-    await insertLesson(id, title, content, mediaUrl)
+    await insertLesson(id, title, content, mediaUrl, value, position, content_type, game_type)
     res.status(201).json({
       success: true,
       message: 'Lesson successfully added to unit',

@@ -15,13 +15,12 @@ exports.getLesson = async (req, res) => {
 
 exports.updateLesson = async (req, res) => {
   const { id } = req.params;
-  console.log(id)
-  const { title, content, mediaUrl } = req.body;
+  const { title, content, mediaUrl, value, position, content_type, game_type } = req.body;
   try {
-    if (!title || !content || !mediaUrl) {
+    if (!title || !content || !content_type) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
-    await updateLessonById(id, title, content, mediaUrl)
+    await updateLessonById(id, title, content, mediaUrl, value, position, content_type, game_type)
     res.status(200).json({ success: true, message: 'Update Lesson successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
