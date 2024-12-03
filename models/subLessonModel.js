@@ -11,7 +11,7 @@ const insertSubLesson = async (lessonId, title, content, mediaUrl, value, positi
 
 // Get sub lesson
 const getSubLesson = async () => {
-  const [result] = await connection.promise().query('SELECT * FROM SubLesson WHERE deleted_at IS NULL;');
+  const [result] = await connection.promise().query('SELECT * FROM SubLesson WHERE deleted_at IS NULL ORDER BY position ASC;');
   return result;
 }
 
