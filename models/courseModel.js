@@ -86,7 +86,10 @@ const getDetail = async (id) => {
       l.id AS lesson_id,
       l.title AS lesson_title,
       l.content AS lesson_content,
-      l.mediaUrl AS lesson_media_url
+      l.content_type AS lesson_content_type,
+      l.mediaUrl AS lesson_media_url,
+      l.value AS lesson_value,
+      l.position AS lesson_position
     FROM
       Course c
     LEFT JOIN
@@ -94,11 +97,14 @@ const getDetail = async (id) => {
     LEFT JOIN
       Lesson l ON l.unit_id = u.id AND l.deleted_at IS NULL
     WHERE
-      c.id = ? AND c.deleted_at IS NULL;`,
+      c.id = ? AND c.deleted_at IS NULL
+    ORDER BY
+      u.id ASC, l.position ASC;`,
     [id]
   );
   return result;
-}
+};
+
 
 // validate course have min 1 unit and 1 lesson
 const validateCourse = async (id) => {

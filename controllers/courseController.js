@@ -154,7 +154,6 @@ exports.getDetailCourse = async (req, res) => {
           unitMap.set(row.unit_id, {
             unit_id: row.unit_id,
             title: row.unit_title,
-            description: row.unit_description,
             lessons: [],
           });
         }
@@ -164,7 +163,10 @@ exports.getDetailCourse = async (req, res) => {
             lesson_id: row.lesson_id,
             title: row.lesson_title,
             content: row.lesson_content,
+            content_type: row.lesson_content_type,
             mediaUrl: row.lesson_media_url,
+            value:  row.lesson_value,
+            position:  row.lesson_position,
           });
         }
       }
